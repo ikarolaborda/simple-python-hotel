@@ -2,7 +2,10 @@ from flask_restful import Resource, reqparse
 from models.User import User
 from flask_jwt_extended import jwt_required
 
+
 class UserResource(Resource):
+
+    @jwt_required()
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('name', type=str, store_missing=False)
@@ -10,7 +13,6 @@ class UserResource(Resource):
         self.reqparse.add_argument('password', type=str, store_missing=False)
         super(UserResource, self).__init__()
 
-    @jwt_required()
     def get(self):
         users = User.findall()
         return {'users': [user.to_json() for user in users]}, 200

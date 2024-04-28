@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.Hotel import Hotel
+from flask_jwt_extended import jwt_required
 
 
 def min_max_validator(value, name, min_val, max_val):
@@ -17,6 +18,7 @@ def price_validator(value):
 
 
 class HotelResource(Resource):
+    @jwt_required()
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('name', type=str, store_missing=False)

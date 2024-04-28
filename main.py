@@ -90,6 +90,7 @@ api.add_resource(HotelResource, '/hotels/<int:hotel_id>', endpoint='hotel_delete
 
 api.add_resource(AuthResource, '/login', endpoint='login')
 api.add_resource(AuthResource, '/register', endpoint='register', methods=['POST'])
+api.add_resource(AuthResource, '/me', endpoint='me', methods=['GET'])
 
 
 api.add_resource(UserResource, '/users', endpoint='users')
@@ -99,4 +100,4 @@ if __name__ == '__main__':
     from database import db
 
     db.init_app(app)
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

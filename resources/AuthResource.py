@@ -1,13 +1,25 @@
-from flask import jsonify, request  # Import request
+from flask import jsonify, request
 from flask_restful import Resource, reqparse
 from models.User import User
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class AuthResource(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
+
+    @jwt_required()
+    def get(self):
+        if request.path.endswith('/me'):
+            user_id = get_jwt_identity()
+            user = User.findbyid(user_id)
+            if user:
+                return user.to_json(), 200
+            return {'message': 'User not found'}, 404
+
+
+
 
     def post(self):
         # Dynamically add arguments based on the endpoint
@@ -19,7 +31,7 @@ class AuthResource(Resource):
         if request.path.endswith('/register'):
             # Handle registration
             self.reqparse.add_argument('name', type=str, required=True, help='Name is required')
-            data = self.reqparse.parse_args()  # Parse again to include name
+            data = self.reqparse.parse_args()
             return self.register(data)
 
         # Handle login
